@@ -49,6 +49,8 @@ describe('UsersController', () => {
       const expectedUser: User = {
         id: 'some-uuid',
         ...createUserDto,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       jest.spyOn(service, 'create').mockResolvedValue(expectedUser);
@@ -93,8 +95,8 @@ describe('UsersController', () => {
   describe('findAll', () => {
     it('should return an array of users', async () => {
       const users: User[] = [
-        { id: 'uuid-1', name: 'User 1', email: 'user1@example.com' },
-        { id: 'uuid-2', name: 'User 2', email: 'user2@example.com' },
+        { id: 'uuid-1', name: 'User 1', email: 'user1@example.com', createdAt: new Date(), updatedAt: new Date() },
+        { id: 'uuid-2', name: 'User 2', email: 'user2@example.com', createdAt: new Date(), updatedAt: new Date() },
       ];
       jest.spyOn(service, 'findAll').mockResolvedValue(users);
 
@@ -110,6 +112,8 @@ describe('UsersController', () => {
         id: userId,
         name: 'Test User',
         email: 'test@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
       jest.spyOn(service, 'findOne').mockResolvedValue(user);
 
@@ -127,7 +131,9 @@ describe('UsersController', () => {
 
     it('should return not found if user not found', async () => {
       const userId = 'non-existent-uuid';
-      jest.spyOn(service, 'findOne').mockResolvedValue(new Error('User not found'));
+      jest
+        .spyOn(service, 'findOne')
+        .mockResolvedValue(new Error('User not found'));
 
       const mockResponse = {
         status: jest.fn().mockReturnThis(),
@@ -152,11 +158,15 @@ describe('UsersController', () => {
         id: userId,
         name: 'Updated Name',
         email: 'test@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       jest.spyOn(service, 'update').mockResolvedValue(updatedUser);
 
-      expect(await controller.update(userId, updateUserDto)).toEqual(updatedUser);
+      expect(await controller.update(userId, updateUserDto)).toEqual(
+        updatedUser,
+      );
       expect(service.update).toHaveBeenCalledWith(userId, updateUserDto);
     });
   });
@@ -164,16 +174,20 @@ describe('UsersController', () => {
   describe('remove', () => {
     it('should remove a user', async () => {
       const userId = 'some-uuid';
-      const deletedUser: User = {
-        id: userId,
-        name: 'Deleted User',
-        email: 'deleted@example.com',
-      };
+      const deletedUserMessage = { message: `userId: ${userId} deleted successfully` };
 
-      jest.spyOn(service, 'remove').mockResolvedValue(deletedUser);
+      jest.spyOn(service, 'remove').mockResolvedValue(deletedUserMessage);
 
-      expect(await controller.remove(userId)).toEqual(deletedUser);
+      const mockResponse = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as any;
+
+      await controller.remove(userId, mockResponse);
+
       expect(service.remove).toHaveBeenCalledWith(userId);
+      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
+      expect(mockResponse.json).toHaveBeenCalledWith(deletedUserMessage);
     });
   });
 });

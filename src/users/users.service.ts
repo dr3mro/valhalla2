@@ -39,7 +39,7 @@ export class UsersService {
       },
     });
 
-    await this.mailService.sendPasswordResetEmail(user.email, token);
+    this.mailService.sendPasswordResetEmail(user.email, token);
 
     return user;
   }

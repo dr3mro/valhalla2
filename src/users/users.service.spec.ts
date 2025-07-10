@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@prisma/client';
+import { MailService } from '../mail/mail.service';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -24,6 +25,12 @@ describe('UsersService', () => {
               update: jest.fn(),
               delete: jest.fn(),
             },
+          },
+        },
+        {
+          provide: MailService,
+          useValue: {
+            sendPasswordResetEmail: jest.fn(),
           },
         },
       ],
@@ -161,6 +168,8 @@ describe('UsersService', () => {
         id: userId,
         name: 'Deleted User',
         email: 'deleted@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       jest.spyOn(prisma.user, 'delete').mockResolvedValue(deletedUser);
