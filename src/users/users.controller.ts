@@ -42,8 +42,19 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne(id);
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() response: Response,
+  ) {
+    const user = await this.usersService.findOne(id);
+
+    if (user instanceof Error) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .json({ message: user.message });
+    }
+
+    return response.status(HttpStatus.OK).json(user);
   }
 
   @Patch(':id')
