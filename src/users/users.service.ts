@@ -7,7 +7,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  create(data: CreateUserDto) {
+  async create(data: CreateUserDto): Promise<CreateUserDto | Error> {
+    const userExists = await this.prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (userExists) {
+      return new Error('User already exists');
+    }
+
     return this.prisma.user.create({
       data: {
         name: data.name,
@@ -21,7 +29,7 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
+    return this.prisma.user.findFirst({ where: { id } });
   }
 
   update(id: number, data: UpdateUserDto) {
