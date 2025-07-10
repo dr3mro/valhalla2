@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Res,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -21,7 +22,7 @@ export class UsersController {
 
   @Post()
   async create(
-    @Body() createUserDto: CreateUserDto,
+    @Body(ValidationPipe) createUserDto: CreateUserDto,
     @Res() response: Response,
   ) {
     const result = await this.usersService.create(createUserDto);
