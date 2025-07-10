@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
+import { User } from '@prisma/client';
+import { MailService } from '../mail/mail.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from '@prisma/client';
-import { MailService } from '../mail/mail.service';
+import { UsersService } from './users.service';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -24,6 +24,9 @@ describe('UsersService', () => {
               findFirst: jest.fn(),
               update: jest.fn(),
               delete: jest.fn(),
+            },
+            passwordResetToken: {
+              create: jest.fn(),
             },
           },
         },
@@ -53,6 +56,8 @@ describe('UsersService', () => {
       const expectedUser: User = {
         id: 'some-uuid-1',
         ...createUserDto,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
@@ -74,6 +79,8 @@ describe('UsersService', () => {
       const existingUser: User = {
         id: 'some-uuid-existing',
         ...createUserDto,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(existingUser);
@@ -95,8 +102,20 @@ describe('UsersService', () => {
   describe('findAll', () => {
     it('should return an array of users', async () => {
       const users: User[] = [
-        { id: 'uuid-1', name: 'User 1', email: 'user1@example.com' },
-        { id: 'uuid-2', name: 'User 2', email: 'user2@example.com' },
+        {
+          id: 'uuid-1',
+          name: 'User 1',
+          email: 'user1@example.com',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 'uuid-2',
+          name: 'User 2',
+          email: 'user2@example.com',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ];
       jest.spyOn(prisma.user, 'findMany').mockResolvedValue(users);
 
@@ -113,6 +132,8 @@ describe('UsersService', () => {
         id: userId,
         name: 'Test User',
         email: 'test@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
       jest.spyOn(prisma.user, 'findFirst').mockResolvedValue(user);
 
@@ -148,6 +169,8 @@ describe('UsersService', () => {
         id: userId,
         name: 'Updated Name',
         email: 'test@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       jest.spyOn(prisma.user, 'update').mockResolvedValue(updatedUser);
@@ -164,18 +187,31 @@ describe('UsersService', () => {
   describe('remove', () => {
     it('should remove a user', async () => {
       const userId = 'some-uuid';
-      const deletedUser: User = {
+      const deletedUserMessage = {
+        message: `userId: ${userId} deleted successfully`,
+      };
+
+      jest.spyOn(prisma.user, 'findFirst').mockResolvedValue({
         id: userId,
         name: 'Deleted User',
         email: 'deleted@example.com',
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
-
-      jest.spyOn(prisma.user, 'delete').mockResolvedValue(deletedUser);
+      });
+      jest.spyOn(prisma.user, 'delete').mockResolvedValue({
+        id: userId,
+        name: 'Deleted User',
+        email: 'deleted@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
 
       const result = await service.remove(userId);
-      expect(result).toEqual(deletedUser);
+      if (result instanceof Error) {
+        throw new Error('Expected a message object, but received an Error.');
+      } else {
+        expect(result).toEqual(deletedUserMessage);
+      }
       expect(prisma.user.delete).toHaveBeenCalledWith({
         where: { id: userId },
       });

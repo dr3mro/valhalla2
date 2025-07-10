@@ -4,19 +4,32 @@ import { AppService } from './app.service';
 
 describe('AppController', () => {
   let appController: AppController;
+  let appService: AppService;
 
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        {
+          provide: AppService,
+          useValue: {
+            getHello: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    appController = module.get<AppController>(AppController);
+    appService = module.get<AppService>(AppService);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+  describe('getHello', () => {
+    it('should call appService.getHello and return the result', () => {
+      const mockResult = 'Mocked Hello World!';
+      jest.spyOn(appService, 'getHello').mockReturnValue(mockResult);
+
+      expect(appController.getHello()).toBe(mockResult);
+      expect(appService.getHello).toHaveBeenCalledTimes(1);
     });
   });
 });
