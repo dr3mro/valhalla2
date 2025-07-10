@@ -55,12 +55,23 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.remove(id);
+  async remove(@Param('id') id: string, @Res() response: Response) {
+    const result = await this.usersService.remove(id);
+
+    if (result instanceof Error) {
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message: result.message,
+      });
+    }
+
+    return response.status(HttpStatus.OK).send(result);
   }
 }
