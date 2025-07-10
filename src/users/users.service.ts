@@ -24,7 +24,7 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  async findOne(id: number): Promise<User | Error> {
+  async findOne(id: string): Promise<User | Error> {
     const result = await this.prisma.user.findFirst({
       where: { id },
     });
@@ -36,11 +36,11 @@ export class UsersService {
     return result;
   }
 
-  update(id: number, data: UpdateUserDto) {
+  update(id: string, data: UpdateUserDto) {
     return this.prisma.user.update({ where: { id }, data });
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.prisma.user.delete({ where: { id } });
   }
 }
