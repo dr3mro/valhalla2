@@ -198,8 +198,19 @@ describe('UsersService', () => {
         updatedAt: new Date(),
       };
 
+      const updateduser = await service.update(userId, updateUserDto);
+      expect(updateduser).toBeInstanceOf(Error);
+
+      if (updateduser instanceof Error) {
+        expect(updateduser.message).toBe('User not found');
+      }
+
+      expect(prisma.user.findFirst).toHaveBeenCalledWith({
+        where: { id: userId },
+      });
       // Mock findFirst to simulate user exists
       jest.spyOn(prisma.user, 'findFirst').mockResolvedValue(updatedUser);
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(updatedUser);
       jest.spyOn(prisma.user, 'update').mockResolvedValue(updatedUser);
 
       const result = await service.update(userId, updateUserDto);
