@@ -69,15 +69,6 @@ export class UsersService {
       }
     }
 
-    // if (data.password) {
-    //   const result = await this.passwordHashService.hashPassword(data.password);
-
-    //   if (result instanceof Error) {
-    //     return result;
-    //   }
-
-    //   data.password = result;
-    // }
     return this.prisma.user.update({ where: { id }, data });
   }
 
