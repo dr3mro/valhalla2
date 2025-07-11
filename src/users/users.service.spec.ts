@@ -149,6 +149,7 @@ describe('UsersService', () => {
         country: 'Test Country',
         phone: '1234567890',
         role: Role.USER,
+        dob: '2000-01-01',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -186,6 +187,11 @@ describe('UsersService', () => {
         id: userId,
         name: 'Updated Name',
         email: 'test@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -214,6 +220,11 @@ describe('UsersService', () => {
         id: userId,
         name: 'Deleted User',
         email: 'deleted@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
         createdAt: new Date(),
         updatedAt: new Date(),
       });
