@@ -11,11 +11,13 @@ import {
   Res,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiBody, ApiParam } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -26,6 +28,25 @@ export class UsersController {
   }
 
   @Post()
+  @ApiBody({
+    description: 'Add a new user',
+    type: CreateUserDto,
+    // This is used to generate the example in Swagger UI
+    examples: {
+      'Create User': {
+        summary: 'Create a new user',
+        value: {
+          name: 'amr',
+          email: 'amr@mail.com',
+          password: 'A1#po!q2A',
+          country: 'egypt',
+          phone: '0123456123',
+          role: 'ADMIN',
+          dob: '1985-01-01',
+        },
+      },
+    },
+  })
   async create(
     @Body(ValidationPipe) createUserDto: CreateUserDto,
     @Res() response: Response,
@@ -49,6 +70,12 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the user to retrieve',
+    required: true,
+    type: String,
+  })
   async findOne(@Param('id') id: string, @Res() response: Response) {
     const user = await this.usersService.findOne(id);
 
@@ -62,6 +89,31 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the user to update',
+    required: true,
+    type: String,
+  })
+  @ApiBody({
+    description: 'Update user details',
+    type: UpdateUserDto,
+    // This is used to generate the example in Swagger UI
+    examples: {
+      'Update User': {
+        summary: 'Update an existing user',
+        value: {
+          name: 'amr',
+          email: 'amr@mail.com',
+          password: 'A1#po!q2A',
+          country: 'egypt',
+          phone: '0123456123',
+          role: 'ADMIN',
+          dob: '1985-01-01',
+        },
+      },
+    },
+  })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
@@ -80,6 +132,12 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the user to delete',
+    required: true,
+    type: String,
+  })
   async remove(@Param('id') id: string, @Res() response: Response) {
     const result = await this.usersService.remove(id);
 
