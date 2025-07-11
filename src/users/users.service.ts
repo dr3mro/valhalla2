@@ -1,18 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { randomBytes, randomUUID } from 'crypto';
-import { addHours } from 'date-fns';
-import { MailService } from '../mail/mail.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private prisma: PrismaService,
-    private mailService: MailService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async create(data: CreateUserDto): Promise<User | Error> {
     const userExists = await this.prisma.user.findUnique({
@@ -24,22 +18,9 @@ export class UsersService {
     }
 
     const user = await this.prisma.user.create({ data });
-
-    const token = randomBytes(32).toString('hex');
-    const expiresAt = addHours(new Date(), 24); // Token valid for 24 hours
-
-    const passwordResetTokenId = randomUUID();
-    await this.prisma.passwordResetToken.create({
-      data: {
-        id: passwordResetTokenId,
-        token,
-        userId: user.id,
-        expiresAt,
-      },
-    });
-
-    this.mailService.sendPasswordResetEmail(user.email, token);
-
+    if (!user) {
+      return new Error('User creation failed');
+    }
     return user;
   }
 

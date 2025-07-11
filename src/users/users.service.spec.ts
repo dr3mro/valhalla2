@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
-import { MailService } from '../mail/mail.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -28,12 +27,6 @@ describe('UsersService', () => {
             passwordResetToken: {
               create: jest.fn(),
             },
-          },
-        },
-        {
-          provide: MailService,
-          useValue: {
-            sendPasswordResetEmail: jest.fn(),
           },
         },
       ],

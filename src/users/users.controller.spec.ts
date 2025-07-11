@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
 import { Response } from 'express';
-import { MailService } from '../mail/mail.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -32,12 +31,6 @@ describe('UsersController', () => {
             passwordResetToken: {
               create: jest.fn(),
             },
-          },
-        },
-        {
-          provide: MailService,
-          useValue: {
-            sendPasswordResetEmail: jest.fn(),
           },
         },
       ],
@@ -84,7 +77,7 @@ describe('UsersController', () => {
       try {
         await controller.create(createUserDto, mockResponse);
       } catch (e) {
-        expect(e.message).toBe('Unexpected error');
+        expect((e as Error).message).toBe('Unexpected error');
       }
     });
     it('should create a user', async () => {
