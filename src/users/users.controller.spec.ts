@@ -217,15 +217,25 @@ describe('UsersController', () => {
     it('should handle error if user not found', async () => {
       const userId = 'non-existent-uuid';
       const updateUserDto: UpdateUserDto = { name: 'Updated Name' };
-      jest.spyOn(service, 'update').mockImplementationOnce(() => {
-        throw new Error('User not found');
-      });
-      try {
-        await controller.update(userId, updateUserDto);
-      } catch (e) {
-        expect(service.update).toHaveBeenCalledWith(userId, updateUserDto);
-        expect((e as Error).message).toBe('User not found');
-      }
+      jest
+        .spyOn(service, 'update')
+        .mockResolvedValue(new Error('User not found'));
+      const result = await controller.update(userId, updateUserDto);
+      expect(service.update).toHaveBeenCalledWith(userId, updateUserDto);
+      expect(result).toBeInstanceOf(Error);
+      expect((result as Error).message).toBe('User not found');
+    });
+
+    it('should handle error if email already in use', async () => {
+      const userId = 'some-uuid';
+      const updateUserDto: UpdateUserDto = { email: 'used@example.com' };
+      jest
+        .spyOn(service, 'update')
+        .mockResolvedValue(new Error('Email already in use'));
+      const result = await controller.update(userId, updateUserDto);
+      expect(service.update).toHaveBeenCalledWith(userId, updateUserDto);
+      expect(result).toBeInstanceOf(Error);
+      expect((result as Error).message).toBe('Email already in use');
     });
     it('should update a user', async () => {
       const userId = 'some-uuid';

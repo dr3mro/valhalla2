@@ -173,6 +173,8 @@ describe('UsersService', () => {
         updatedAt: new Date(),
       };
 
+      // Mock findFirst to simulate user exists
+      jest.spyOn(prisma.user, 'findFirst').mockResolvedValue(updatedUser);
       jest.spyOn(prisma.user, 'update').mockResolvedValue(updatedUser);
 
       const result = await service.update(userId, updateUserDto);

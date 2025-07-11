@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
+import { randomBytes, randomUUID } from 'crypto';
+import { addHours } from 'date-fns';
+import { MailService } from '../mail/mail.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from '@prisma/client';
-import { MailService } from '../mail/mail.service';
-import { randomBytes } from 'crypto';
-import { addHours } from 'date-fns';
-import { randomUUID } from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -60,7 +59,23 @@ export class UsersService {
     return result;
   }
 
-  update(id: string, data: UpdateUserDto) {
+  async update(id: string, data: UpdateUserDto) {
+    const user = await this.prisma.user.findFirst({ where: { id } });
+
+    if (!user) {
+      return new Error('User not found');
+    }
+
+    if (data.email) {
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email: data.email },
+      });
+
+      if (existingUser && existingUser.id !== id) {
+        return new Error('Email already in use');
+      }
+    }
+
     return this.prisma.user.update({ where: { id }, data });
   }
 
