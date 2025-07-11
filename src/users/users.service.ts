@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { PasswordHashService } from '../password-hash/password-hash.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private passwordHashService: PasswordHashService,
+  ) {}
 
   async create(data: CreateUserDto): Promise<User | Error> {
     const userExists = await this.prisma.user.findUnique({
@@ -16,6 +20,8 @@ export class UsersService {
     if (userExists) {
       return new Error('User already exists');
     }
+
+    data.password = await this.passwordHashService.hashPassword(data.password);
 
     const user = await this.prisma.user.create({ data });
     if (!user) {
@@ -57,6 +63,11 @@ export class UsersService {
       }
     }
 
+    if (data.password) {
+      data.password = await this.passwordHashService.hashPassword(
+        data.password,
+      );
+    }
     return this.prisma.user.update({ where: { id }, data });
   }
 

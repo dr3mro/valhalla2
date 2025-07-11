@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
 import { Response } from 'express';
+import { PasswordHashService } from '../password-hash/password-hash.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto, Role } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -33,6 +34,7 @@ describe('UsersController', () => {
             },
           },
         },
+        PasswordHashService,
       ],
     }).compile();
 
