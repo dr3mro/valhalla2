@@ -2,7 +2,7 @@
     "clientName": "Thunder Client",
     "collectionName": "users",
     "collectionId": "a66e425b-c989-4b4e-9d73-b70014dc53b1",
-    "dateExported": "2025-07-11T00:03:23.879Z",
+    "dateExported": "2025-07-11T01:48:01.293Z",
     "version": "1.2",
     "folders": [],
     "requests": [
@@ -15,11 +15,11 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2025-07-10T23:45:20.006Z",
-            "modified": "2025-07-10T23:46:28.453Z",
+            "modified": "2025-07-11T01:47:12.549Z",
             "headers": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\" : \"amr\",\n  \"email\" : \"dr3mro@gmail.com\"\n}",
+                "raw": "{\n  \"name\" : \"amr\",\n  \"email\" : \"dr3mro@gmail.com\",\n  \"password\" : \"password\",\n  \"country\" : \"egypt\",\n  \"phone\" : \"0123456123\",\n  \"role\" : \"ADMIN\",\n  \"dob\" : \"1985-01-01\"\n}",
                 "form": []
             }
         },
@@ -40,15 +40,15 @@
             "colId": "a66e425b-c989-4b4e-9d73-b70014dc53b1",
             "containerId": "",
             "name": "update_user",
-            "url": "localhost:3000/users/b727f107-1973-466a-a4f7-c03b927aff70",
+            "url": "localhost:3000/users/ad9c7e26-c871-44a9-a590-33acf1bc8a8f",
             "method": "PATCH",
             "sortNum": 20000,
             "created": "2025-07-10T23:47:41.024Z",
-            "modified": "2025-07-10T23:53:33.401Z",
+            "modified": "2025-07-11T01:47:38.537Z",
             "headers": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\" : \"amr_osman\",\n  \"email\" : \"dr3mro@gmail.com\"\n}",
+                "raw": "{\n  \"name\" : \"amr osman\",\n  \"email\" : \"dr3mro@gmail.com\",\n  \"password\" : \"password\",\n  \"country\" : \"egypt\",\n  \"phone\" : \"0123456123\",\n  \"role\" : \"ADMIN\",\n  \"dob\" : \"1985-01-01\"\n}",
                 "form": []
             }
         },
@@ -77,5 +77,5 @@
             "headers": []
         }
     ],
-    "ref": "XyvuWHu1TfXZT3PoCiSatBvwT3Dvodff2N2KfdNWhzd0p2FyD2AxC8vmfTbrEc6mt7-4MwDmPC_UzFZ6wCcY4A"
+    "ref": "XyvuWHu1TfXZT3PoCiSatBvwT3Dvodff2N2KfdNWhzchJBcAXWNF7gN0hGU9SJ9rSL9yhgVcuJxPmwAqxpW9dg"
 }
