@@ -11,14 +11,19 @@ import {
   Res,
   ValidationPipe,
 } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  omitPassword(object: User): Omit<User, 'password'> {
+    const { password: _password, ...userWithoutPassword } = object;
+    return userWithoutPassword;
+  }
 
   @Post()
   async create(
@@ -33,12 +38,14 @@ export class UsersController {
       });
     }
 
-    return response.status(HttpStatus.CREATED).json(result);
+    return response.status(HttpStatus.CREATED).json(this.omitPassword(result));
   }
 
   @Get()
   findAll() {
-    return this.usersService.findAll();
+    return this.usersService
+      .findAll()
+      .then((users) => users.map((user) => this.omitPassword(user)));
   }
 
   @Get(':id')
@@ -51,7 +58,7 @@ export class UsersController {
         .json({ message: user.message });
     }
 
-    return response.status(HttpStatus.OK).json(user);
+    return response.status(HttpStatus.OK).json(this.omitPassword(user));
   }
 
   @Patch(':id')
@@ -60,6 +67,7 @@ export class UsersController {
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
     @Res() response: Response,
   ) {
+    //TODO: updating password should be handled separately
     const result = await this.usersService.update(id, updateUserDto);
 
     if (result instanceof Error) {
@@ -68,7 +76,7 @@ export class UsersController {
         .json({ message: result.message });
     }
 
-    return response.status(HttpStatus.OK).json(result);
+    return response.status(HttpStatus.OK).json(this.omitPassword(result));
   }
 
   @Delete(':id')

@@ -30,6 +30,15 @@ export default tseslint.config(
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
       '@typescript-eslint/unbound-method': 'off',
+      // Add or modify this rule:
+      '@typescript-eslint/no-unused-vars': [
+        'warn', // or 'error' depending on your preference
+        {
+          argsIgnorePattern: '^_', // Ignore arguments starting with _
+          varsIgnorePattern: '^_', // Ignore variables starting with _
+          caughtErrorsIgnorePattern: '^_', // Ignore caught errors starting with _
+        },
+      ],
     },
   },
 );

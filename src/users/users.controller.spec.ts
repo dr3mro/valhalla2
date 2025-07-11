@@ -97,14 +97,19 @@ describe('UsersController', () => {
         role: Role.USER,
         dob: '2000-01-01',
       };
-      const expectedUser: User = {
+      const expectedUser: Omit<User, 'password'> = {
         id: 'some-uuid',
-        ...createUserDto,
+        name: createUserDto.name,
+        email: createUserDto.email,
+        country: createUserDto.country,
+        phone: createUserDto.phone,
+        role: createUserDto.role,
+        dob: createUserDto.dob,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
 
-      jest.spyOn(service, 'create').mockResolvedValue(expectedUser);
+      jest.spyOn(service, 'create').mockResolvedValue(expectedUser as any);
 
       const mockResponse = {
         status: jest.fn().mockReturnThis(),
@@ -155,12 +160,11 @@ describe('UsersController', () => {
       expect(service.findAll).toHaveBeenCalled();
     });
     it('should return an array of users', async () => {
-      const users: User[] = [
+      const users: Omit<User, 'password'>[] = [
         {
           id: 'uuid-1',
           name: 'User 1',
           email: 'user1@example.com',
-          password: 'password',
           country: 'Test Country',
           phone: '1234567890',
           role: Role.USER,
@@ -172,7 +176,6 @@ describe('UsersController', () => {
           id: 'uuid-2',
           name: 'User 2',
           email: 'user2@example.com',
-          password: 'password',
           country: 'Test Country',
           phone: '1234567890',
           role: Role.USER,
@@ -181,7 +184,7 @@ describe('UsersController', () => {
           updatedAt: new Date(),
         },
       ];
-      jest.spyOn(service, 'findAll').mockResolvedValue(users);
+      jest.spyOn(service, 'findAll').mockResolvedValue(users as any);
 
       expect(await controller.findAll()).toEqual(users);
       expect(service.findAll).toHaveBeenCalled();
@@ -191,11 +194,10 @@ describe('UsersController', () => {
   describe('findOne', () => {
     it('should return a user if found', async () => {
       const userId = 'some-uuid';
-      const user: User = {
+      const user: Omit<User, 'password'> = {
         id: userId,
         name: 'Test User',
         email: 'test@example.com',
-        password: 'password',
         country: 'Test Country',
         phone: '1234567890',
         role: Role.USER,
@@ -203,7 +205,7 @@ describe('UsersController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      jest.spyOn(service, 'findOne').mockResolvedValue(user);
+      jest.spyOn(service, 'findOne').mockResolvedValue(user as any);
 
       const mockResponse = {
         status: jest.fn().mockReturnThis(),
@@ -277,11 +279,10 @@ describe('UsersController', () => {
     it('should update a user', async () => {
       const userId = 'some-uuid';
       const updateUserDto: UpdateUserDto = { name: 'Updated Name' };
-      const updatedUser: User = {
+      const updatedUser: Omit<User, 'password'> = {
         id: userId,
         name: 'Updated Name',
         email: 'test@example.com',
-        password: 'password',
         country: 'Test Country',
         phone: '1234567890',
         role: Role.USER,
@@ -290,7 +291,7 @@ describe('UsersController', () => {
         updatedAt: new Date(),
       };
 
-      jest.spyOn(service, 'update').mockResolvedValue(updatedUser);
+      jest.spyOn(service, 'update').mockResolvedValue(updatedUser as any);
 
       const mockResponse = {
         status: jest.fn().mockReturnThis(),
