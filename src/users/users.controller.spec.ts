@@ -245,10 +245,16 @@ describe('UsersController', () => {
       jest
         .spyOn(service, 'update')
         .mockResolvedValue(new Error('User not found'));
-      const result = await controller.update(userId, updateUserDto);
+      const mockResponse = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+      await controller.update(userId, updateUserDto, mockResponse);
       expect(service.update).toHaveBeenCalledWith(userId, updateUserDto);
-      expect(result).toBeInstanceOf(Error);
-      expect((result as Error).message).toBe('User not found');
+      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        message: 'User not found',
+      });
     });
 
     it('should handle error if email already in use', async () => {
@@ -257,10 +263,16 @@ describe('UsersController', () => {
       jest
         .spyOn(service, 'update')
         .mockResolvedValue(new Error('Email already in use'));
-      const result = await controller.update(userId, updateUserDto);
+      const mockResponse = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+      await controller.update(userId, updateUserDto, mockResponse);
       expect(service.update).toHaveBeenCalledWith(userId, updateUserDto);
-      expect(result).toBeInstanceOf(Error);
-      expect((result as Error).message).toBe('Email already in use');
+      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        message: 'Email already in use',
+      });
     });
     it('should update a user', async () => {
       const userId = 'some-uuid';
@@ -280,10 +292,16 @@ describe('UsersController', () => {
 
       jest.spyOn(service, 'update').mockResolvedValue(updatedUser);
 
-      expect(await controller.update(userId, updateUserDto)).toEqual(
-        updatedUser,
-      );
+      const mockResponse = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+
+      await controller.update(userId, updateUserDto, mockResponse);
+
       expect(service.update).toHaveBeenCalledWith(userId, updateUserDto);
+      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
+      expect(mockResponse.json).toHaveBeenCalledWith(updatedUser);
     });
   });
 

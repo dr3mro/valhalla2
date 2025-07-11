@@ -11,10 +11,10 @@ import {
   Res,
   ValidationPipe,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -55,11 +55,20 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+    @Res() response: Response,
   ) {
-    return this.usersService.update(id, updateUserDto);
+    const result = await this.usersService.update(id, updateUserDto);
+
+    if (result instanceof Error) {
+      return response
+        .status(HttpStatus.NOT_FOUND)
+        .json({ message: result.message });
+    }
+
+    return response.status(HttpStatus.OK).json(result);
   }
 
   @Delete(':id')

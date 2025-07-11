@@ -21,7 +21,13 @@ export class UsersService {
       return new Error('User already exists');
     }
 
-    data.password = await this.passwordHashService.hashPassword(data.password);
+    const result = await this.passwordHashService.hashPassword(data.password);
+
+    if (result instanceof Error) {
+      return result;
+    }
+
+    data.password = result;
 
     const user = await this.prisma.user.create({ data });
     if (!user) {
@@ -64,9 +70,13 @@ export class UsersService {
     }
 
     if (data.password) {
-      data.password = await this.passwordHashService.hashPassword(
-        data.password,
-      );
+      const result = await this.passwordHashService.hashPassword(data.password);
+
+      if (result instanceof Error) {
+        return result;
+      }
+
+      data.password = result;
     }
     return this.prisma.user.update({ where: { id }, data });
   }
