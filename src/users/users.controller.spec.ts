@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
 import { Response } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, Role } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
@@ -66,6 +66,11 @@ describe('UsersController', () => {
       const createUserDto: CreateUserDto = {
         name: 'Test User',
         email: 'test@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
       };
       jest.spyOn(service, 'create').mockImplementation(() => {
         throw new Error('Unexpected error');
@@ -84,6 +89,11 @@ describe('UsersController', () => {
       const createUserDto: CreateUserDto = {
         name: 'Test User',
         email: 'test@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
       };
       const expectedUser: User = {
         id: 'some-uuid',
@@ -110,6 +120,11 @@ describe('UsersController', () => {
       const createUserDto: CreateUserDto = {
         name: 'Test User',
         email: 'test@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
       };
 
       jest

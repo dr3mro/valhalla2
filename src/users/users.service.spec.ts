@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, Role } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
@@ -45,6 +45,11 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         name: 'Test User',
         email: 'test@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
       };
       const expectedUser: User = {
         id: 'some-uuid-1',
@@ -68,6 +73,11 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         name: 'Test User',
         email: 'test@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
       };
       const existingUser: User = {
         id: 'some-uuid-existing',
@@ -99,6 +109,11 @@ describe('UsersService', () => {
           id: 'uuid-1',
           name: 'User 1',
           email: 'user1@example.com',
+          password: 'password',
+          country: 'Test Country',
+          phone: '1234567890',
+          role: Role.USER,
+          dob: '2000-01-01',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -106,6 +121,11 @@ describe('UsersService', () => {
           id: 'uuid-2',
           name: 'User 2',
           email: 'user2@example.com',
+          password: 'password',
+          country: 'Test Country',
+          phone: '0987654321',
+          role: Role.USER,
+          dob: '2000-01-02',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -125,6 +145,10 @@ describe('UsersService', () => {
         id: userId,
         name: 'Test User',
         email: 'test@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -197,6 +221,11 @@ describe('UsersService', () => {
         id: userId,
         name: 'Deleted User',
         email: 'deleted@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
         createdAt: new Date(),
         updatedAt: new Date(),
       });

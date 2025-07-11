@@ -17,6 +17,11 @@ model User {
   id                  String               @id @default(uuid())
   name                String
   email               String               @unique
+  password            String 
+  country             String
+  phone               String
+  dob                 String
+  role                String
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
 }
