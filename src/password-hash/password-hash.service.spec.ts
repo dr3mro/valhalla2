@@ -63,20 +63,27 @@ describe('PasswordHashService', () => {
     });
 
     it('should return false for non-matching passwords', async () => {
-      const result = await service.comparePasswords('wrongPassword', hashedPassword);
+      const result = await service.comparePasswords(
+        'wrongPassword',
+        hashedPassword,
+      );
       expect(result).toBe(false);
     });
 
     it('should throw an error if hashed password is not a string', async () => {
       await expect(
         service.comparePasswords(password, 123 as any),
-      ).rejects.toThrow('Error comparing passwords: Illegal arguments: string, number');
+      ).rejects.toThrow(
+        'Error comparing passwords: Illegal arguments: string, number',
+      );
     });
 
     it('should throw an error if password is not a string', async () => {
       await expect(
         service.comparePasswords(123 as any, hashedPassword),
-      ).rejects.toThrow('Error comparing passwords: Illegal arguments: number, string');
+      ).rejects.toThrow(
+        'Error comparing passwords: Illegal arguments: number, string',
+      );
     });
   });
 });
