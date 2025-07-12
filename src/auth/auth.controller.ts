@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   HttpCode,
   HttpStatus,
@@ -12,11 +13,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login() {
-    const loginResult = await this.authService.validateUser({
-      username: 'dr3mro@gmail.com',
-      password: 'A1#po!q2A',
-    });
+  async login(@Body() body: { username: string; password: string }) {
+    const loginResult = await this.authService.validateUser(body);
 
     if (loginResult) {
       return { message: 'Login successful', data: loginResult };

@@ -1,19 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { PasswordHashService } from '../password-hash/password-hash.service';
-
-type AuthInput = {
-  username: string;
-  password: string;
-};
-
-type SignInResponse = {
-  accessToken: string;
-  user: {
-    id: string;
-    username: string;
-  };
-};
+import { AuthInput, SignInResponse } from './types/auth.types';
 
 @Injectable()
 export class AuthService {
