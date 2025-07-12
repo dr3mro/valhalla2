@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { PasswordHashService } from 'src/password-hash/password-hash.service';
 import { UsersModule } from 'src/users/users.module';
+import { PasswordHashService } from '../password-hash/password-hash.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './guards/auth.guard';
@@ -17,6 +17,6 @@ import { AuthGuard } from './guards/auth.guard';
   ],
   controllers: [AuthController],
   providers: [AuthService, PasswordHashService, AuthGuard],
-  exports: [AuthService],
+  exports: [AuthService, PasswordHashService],
 })
 export class AuthModule {}

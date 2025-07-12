@@ -2,8 +2,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { Request } from 'express';
-import { PasswordHashService } from 'src/password-hash/password-hash.service';
-import { UsersService } from 'src/users/users.service';
+import { PasswordHashService } from '../password-hash/password-hash.service';
+import { UsersService } from '../users/users.service';
 import { AuthInputDto } from './dto/authInputDto';
 import { SignInResponseDto } from './dto/signInResponseDto';
 
