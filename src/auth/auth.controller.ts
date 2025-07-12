@@ -20,7 +20,7 @@ export class AuthController {
   async login(
     @Body(ValidationPipe) body: AuthInputDto,
   ): Promise<SignInResponseDto> {
-    const loginResult = await this.authService.validateUser(body);
+    const loginResult = await this.authService.authenticate(body);
 
     if (loginResult) {
       return loginResult;

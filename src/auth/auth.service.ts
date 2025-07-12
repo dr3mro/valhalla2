@@ -13,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(
+  async authenticate(
     authInput: AuthInputDto,
   ): Promise<SignInResponseDto | null> {
     const { username, password } = authInput;
