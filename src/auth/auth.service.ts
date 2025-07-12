@@ -22,7 +22,7 @@ export class AuthService {
 
     const user = await this.usersService.findByEmail(username);
 
-    if (user instanceof Error) {
+    if (user instanceof Error || !user) {
       return null;
     }
 
@@ -52,7 +52,6 @@ export class AuthService {
     const token = authHeader?.split(' ').at(1)?.trim(); // Get the token part after "Bearer"
 
     if (!token) {
-      console.warn('Authorization header missing or token not found');
       return null;
     }
 
@@ -65,8 +64,8 @@ export class AuthService {
 
       const user = await this.usersService.findById(userId);
       return user instanceof Error ? null : user;
-    } catch {
-      throw new UnauthorizedException();
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
     }
   }
 }
