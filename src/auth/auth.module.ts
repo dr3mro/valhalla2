@@ -4,6 +4,7 @@ import { PasswordHashService } from 'src/password-hash/password-hash.service';
 import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { AuthGuard } from './guards/auth.guard';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { AuthService } from './auth.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, PasswordHashService],
+  providers: [AuthService, PasswordHashService, AuthGuard],
   exports: [AuthService],
 })
 export class AuthModule {}

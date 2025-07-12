@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
+import { Request } from 'express';
+import { PasswordHashService } from 'src/password-hash/password-hash.service';
 import { UsersService } from 'src/users/users.service';
-import { PasswordHashService } from '../password-hash/password-hash.service';
 import { AuthInputDto } from './dto/authInputDto';
 import { SignInResponseDto } from './dto/signInResponseDto';
 
@@ -43,5 +45,28 @@ export class AuthService {
         username: user.email,
       },
     };
+  }
+
+  async getUserFromRequest(request: Request): Promise<User | null> {
+    const authHeader = request.headers['authorization'];
+    const token = authHeader?.split(' ').at(1)?.trim(); // Get the token part after "Bearer"
+
+    if (!token) {
+      console.warn('Authorization header missing or token not found');
+      return null;
+    }
+
+    try {
+      const decoded = await this.jwtService.verifyAsync(token);
+      const userId = decoded?.sub;
+
+      if (!userId) return null;
+
+      const user = await this.usersService.findById(userId);
+      return user instanceof Error ? null : user;
+    } catch (error) {
+      console.error('Error verifying JWT:', error);
+      return null;
+    }
   }
 }
