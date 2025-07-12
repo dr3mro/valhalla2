@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { PasswordHashService } from '../password-hash/password-hash.service';
-import { AuthInput, SignInResponse } from './types/auth.types';
+import { AuthInputDto } from './dto/authInputDto';
+import { SignInResponseDto } from './dto/signInResponseDto';
 
 @Injectable()
 export class AuthService {
@@ -10,15 +11,14 @@ export class AuthService {
     private readonly passwordHashService: PasswordHashService,
   ) {}
 
-  async validateUser(authInput: AuthInput): Promise<SignInResponse | null> {
+  async validateUser(
+    authInput: AuthInputDto,
+  ): Promise<SignInResponseDto | null> {
     const { username, password } = authInput;
-
-    console.log(`Validating user: ${username} with password: ${password}`);
 
     const user = await this.usersService.findByEmail(username);
 
     if (user instanceof Error) {
-      console.log('User not found or error occurred:', user.message);
       return null;
     }
 
@@ -28,7 +28,6 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      console.log('Invalid password for user:', username);
       return null;
     }
 
