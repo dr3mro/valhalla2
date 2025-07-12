@@ -6,6 +6,7 @@ import { UpdateUserDto } from './users/dto/update-user.dto';
 
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api/v2');
 
   const config = new DocumentBuilder()
     .setTitle('Valhalla 2.0 API')
@@ -17,7 +18,7 @@ export async function bootstrap() {
     SwaggerModule.createDocument(app, config, {
       extraModels: [CreateUserDto, UpdateUserDto],
     });
-  SwaggerModule.setup('api', app, documentFactory);
+  SwaggerModule.setup('api/v2', app, documentFactory);
   await app.listen(process.env.PORT ?? 3000);
 }
 
