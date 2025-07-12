@@ -77,7 +77,7 @@ export class UsersController {
     type: String,
   })
   async findOne(@Param('id') id: string, @Res() response: Response) {
-    const user = await this.usersService.findOne(id);
+    const user = await this.usersService.findById(id);
 
     if (user instanceof Error) {
       return response

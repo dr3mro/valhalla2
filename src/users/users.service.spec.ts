@@ -140,7 +140,7 @@ describe('UsersService', () => {
     });
   });
 
-  describe('findOne', () => {
+  describe('findById', () => {
     it('should return a user if found', async () => {
       const userId = 'some-uuid';
       const user: User = {
@@ -157,7 +157,7 @@ describe('UsersService', () => {
       };
       jest.spyOn(prisma.user, 'findFirst').mockResolvedValue(user);
 
-      const result = await service.findOne(userId);
+      const result = await service.findById(userId);
       expect(result).toEqual(user);
       expect(prisma.user.findFirst).toHaveBeenCalledWith({
         where: { id: userId },
@@ -168,7 +168,7 @@ describe('UsersService', () => {
       const userId = 'non-existent-uuid';
       jest.spyOn(prisma.user, 'findFirst').mockResolvedValue(null);
 
-      const result = await service.findOne(userId);
+      const result = await service.findById(userId);
       expect(result).toBeInstanceOf(Error);
       if (result instanceof Error) {
         expect(result.message).toBe('User not found');

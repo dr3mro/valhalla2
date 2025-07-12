@@ -40,7 +40,7 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  async findOne(id: string): Promise<User | Error> {
+  async findById(id: string): Promise<User | Error> {
     const result = await this.prisma.user.findFirst({
       where: { id },
     });
@@ -50,6 +50,18 @@ export class UsersService {
     }
 
     return result;
+  }
+
+  async findByEmail(email: string): Promise<User | Error> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return new Error('User not found');
+    }
+
+    return user;
   }
 
   async update(id: string, data: UpdateUserDto) {

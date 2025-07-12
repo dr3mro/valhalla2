@@ -205,7 +205,7 @@ describe('UsersController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      jest.spyOn(service, 'findOne').mockResolvedValue(user as any);
+      jest.spyOn(service, 'findById').mockResolvedValue(user as any);
 
       const mockResponse = {
         status: jest.fn().mockReturnThis(),
@@ -214,7 +214,7 @@ describe('UsersController', () => {
 
       await controller.findOne(userId, mockResponse);
 
-      expect(service.findOne).toHaveBeenCalledWith(userId);
+      expect(service.findById).toHaveBeenCalledWith(userId);
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
       expect(mockResponse.json).toHaveBeenCalledWith(user);
     });
@@ -222,7 +222,7 @@ describe('UsersController', () => {
     it('should return not found if user not found', async () => {
       const userId = 'non-existent-uuid';
       jest
-        .spyOn(service, 'findOne')
+        .spyOn(service, 'findById')
         .mockResolvedValue(new Error('User not found'));
 
       const mockResponse = {
@@ -232,7 +232,7 @@ describe('UsersController', () => {
 
       await controller.findOne(userId, mockResponse);
 
-      expect(service.findOne).toHaveBeenCalledWith(userId);
+      expect(service.findById).toHaveBeenCalledWith(userId);
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
       expect(mockResponse.json).toHaveBeenCalledWith({
         message: 'User not found',
