@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { Request } from 'express';
@@ -57,16 +57,16 @@ export class AuthService {
     }
 
     try {
-      const decoded = await this.jwtService.verifyAsync(token);
+      const decoded: { username: string; sub: string } =
+        await this.jwtService.verifyAsync(token);
       const userId = decoded?.sub;
 
       if (!userId) return null;
 
       const user = await this.usersService.findById(userId);
       return user instanceof Error ? null : user;
-    } catch (error) {
-      console.error('Error verifying JWT:', error);
-      return null;
+    } catch {
+      throw new UnauthorizedException();
     }
   }
 }

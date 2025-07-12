@@ -109,7 +109,7 @@ describe('UsersController', () => {
         updatedAt: new Date(),
       };
 
-      jest.spyOn(service, 'create').mockResolvedValue(expectedUser as any);
+      jest.spyOn(service, 'create').mockResolvedValue(expectedUser as User);
 
       const mockResponse = {
         status: jest.fn().mockReturnThis(),
@@ -184,7 +184,7 @@ describe('UsersController', () => {
           updatedAt: new Date(),
         },
       ];
-      jest.spyOn(service, 'findAll').mockResolvedValue(users as any);
+      jest.spyOn(service, 'findAll').mockResolvedValue(users);
 
       expect(await controller.findAll()).toEqual(users);
       expect(service.findAll).toHaveBeenCalled();
@@ -205,7 +205,7 @@ describe('UsersController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      jest.spyOn(service, 'findById').mockResolvedValue(user as any);
+      jest.spyOn(service, 'findById').mockResolvedValue(user);
 
       const mockResponse = {
         status: jest.fn().mockReturnThis(),
@@ -291,7 +291,7 @@ describe('UsersController', () => {
         updatedAt: new Date(),
       };
 
-      jest.spyOn(service, 'update').mockResolvedValue(updatedUser as any);
+      jest.spyOn(service, 'update').mockResolvedValue(updatedUser);
 
       const mockResponse = {
         status: jest.fn().mockReturnThis(),
