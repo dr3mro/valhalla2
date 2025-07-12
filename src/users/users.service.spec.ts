@@ -181,6 +181,47 @@ describe('UsersService', () => {
     });
   });
 
+  describe('findByEmail', () => {
+    it('should return a user if found', async () => {
+      const email = 'test@example.com';
+      const user: User = {
+        id: 'some-uuid',
+        name: 'Test User',
+        email,
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(user);
+
+      const result = await service.findByEmail(email);
+      expect(result).toEqual(user);
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: { email },
+      });
+    });
+
+    it('should return an error if user not found', async () => {
+      const email = 'non-existent-email@example.com';
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
+
+      const result = await service.findByEmail(email);
+      expect(result).toBeInstanceOf(Error);
+      if (result instanceof Error) {
+        expect(result.message).toBe('User not found');
+      } else {
+        fail('Expected an Error instance, but received a User object.');
+      }
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: { email },
+      });
+    });
+  });
+
   describe('update', () => {
     it('should update a user', async () => {
       const userId = 'some-uuid';
