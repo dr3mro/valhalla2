@@ -84,7 +84,9 @@ describe('AuthService', () => {
       const mockAccessToken = 'mockAccessToken';
 
       (usersService.findByEmail as jest.Mock).mockResolvedValue(mockUser);
-      (passwordHashService.comparePasswords as jest.Mock).mockResolvedValue(true);
+      (passwordHashService.comparePasswords as jest.Mock).mockResolvedValue(
+        true,
+      );
       (jwtService.sign as jest.Mock).mockReturnValue(mockAccessToken);
 
       const result = await service.authenticate(mockAuthInput);
@@ -127,7 +129,9 @@ describe('AuthService', () => {
       };
 
       (usersService.findByEmail as jest.Mock).mockResolvedValue(mockUser);
-      (passwordHashService.comparePasswords as jest.Mock).mockResolvedValue(false);
+      (passwordHashService.comparePasswords as jest.Mock).mockResolvedValue(
+        false,
+      );
 
       const result = await service.authenticate(mockAuthInput);
       expect(result).toBeNull();

@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { AuthInputDto } from './auth/dto/authInputDto';
+import { SignInResponseDto } from './auth/dto/signInResponseDto';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { UpdateUserDto } from './users/dto/update-user.dto';
 
@@ -18,7 +20,12 @@ export async function bootstrap() {
     .build();
   const documentFactory = () =>
     SwaggerModule.createDocument(app, config, {
-      extraModels: [CreateUserDto, UpdateUserDto],
+      extraModels: [
+        CreateUserDto,
+        UpdateUserDto,
+        AuthInputDto,
+        SignInResponseDto,
+      ],
     });
   SwaggerModule.setup('api/v2', app, documentFactory);
 

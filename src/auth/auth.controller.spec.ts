@@ -47,7 +47,9 @@ describe('AuthController', () => {
         accessToken: 'mockAccessToken',
         user: { id: '1', username: 'test@example.com' },
       };
-      (authService.authenticate as jest.Mock).mockResolvedValue(mockSignInResponse);
+      (authService.authenticate as jest.Mock).mockResolvedValue(
+        mockSignInResponse,
+      );
 
       const result = await controller.login(mockAuthInput);
       expect(result).toEqual(mockSignInResponse);
