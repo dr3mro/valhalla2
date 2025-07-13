@@ -6,6 +6,7 @@ import { PasswordHashService } from '../password-hash/password-hash.service';
 import { UsersService } from '../users/users.service';
 import { AuthInputDto } from './dto/authInputDto';
 import { SignInResponseDto } from './dto/signInResponseDto';
+import { JwtPayload } from './interfaces/jwtpayload.interface';
 
 @Injectable()
 export class AuthService {
@@ -26,17 +27,15 @@ export class AuthService {
       return null;
     }
 
-    const isPasswordValid = await this.passwordHashService.comparePasswords(
-      password,
-      user.password,
-    );
+    const isPasswordValid: boolean =
+      await this.passwordHashService.comparePasswords(password, user.password);
 
     if (!isPasswordValid) {
       return null;
     }
 
-    const payload = { username: user.email, sub: user.id };
-    const accessToken = this.jwtService.sign(payload);
+    const payload: JwtPayload = { username: user.email, sub: user.id };
+    const accessToken: string = this.jwtService.sign(payload);
 
     return {
       accessToken: accessToken,
@@ -56,8 +55,7 @@ export class AuthService {
     }
 
     try {
-      const decoded: { username: string; sub: string } =
-        await this.jwtService.verifyAsync(token);
+      const decoded: JwtPayload = await this.jwtService.verifyAsync(token);
       const userId = decoded?.sub;
 
       if (!userId) return null;
