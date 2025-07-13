@@ -60,7 +60,7 @@ export class AuthService {
 
       if (!userId) return null;
 
-      const user = await this.usersService.findById(userId);
+      const user: User | Error = await this.usersService.findById(userId);
       return user instanceof Error ? null : user;
     } catch {
       throw new UnauthorizedException(`Invalid token`);

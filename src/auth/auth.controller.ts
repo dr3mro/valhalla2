@@ -64,6 +64,7 @@ export class AuthController {
     if (!request.user) {
       throw new UnauthorizedException('User not authenticated');
     }
+    request.user.password = '********';
     return request.user;
   }
 }
