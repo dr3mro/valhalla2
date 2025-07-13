@@ -82,14 +82,16 @@ describe('AuthController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      const mockRequest: RequestWithUser = { user: mockUser } as any;
+      const mockRequest: RequestWithUser = {
+        user: mockUser,
+      } as RequestWithUser;
 
       const result = controller.getProfile(mockRequest);
       expect(result).toEqual(mockUser);
     });
 
     it('should throw UnauthorizedException if user is not authenticated', () => {
-      const mockRequest: RequestWithUser = { user: null } as any;
+      const mockRequest = { user: null } as unknown as RequestWithUser;
 
       expect(() => controller.getProfile(mockRequest)).toThrow(
         UnauthorizedException,
