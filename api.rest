@@ -31,7 +31,7 @@ Content-Type: application/json
 {
   "name": "amr osman",
   "email": "dr3mro@gmail.com",
-  "password": "password",
+  "password": "A1#po!q2A",
   "country": "egypt",
   "phone": "0123456123",
   "role": "ADMIN",
@@ -55,7 +55,7 @@ POST http://localhost:3000/api/v2/auth/login
 Content-Type: application/json
 
 {
-  "username": "dr3mro2@gmail.com",
+  "username": "dr3mro@gmail.com",
   "password": "A1#po!q2A"
 }
 

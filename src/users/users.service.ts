@@ -81,7 +81,19 @@ export class UsersService {
       }
     }
 
-    return this.prisma.user.update({ where: { id }, data });
+    const updateData: Partial<User> = { ...data };
+
+    if (data.password) {
+      const hashedPassword = await this.passwordHashService.hashPassword(
+        data.password,
+      );
+      if (hashedPassword instanceof Error) {
+        return hashedPassword;
+      }
+      updateData.password = hashedPassword;
+    }
+
+    return this.prisma.user.update({ where: { id }, data: updateData });
   }
 
   async remove(id: string) {

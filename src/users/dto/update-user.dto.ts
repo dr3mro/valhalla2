@@ -4,6 +4,4 @@ import { CreateUserDto } from './create-user.dto';
 /**
  * All fields are optional for updating a user.
  */
-export class UpdateUserDto extends PartialType(
-  OmitType(CreateUserDto, ['password'] as const),
-) {}
+export class UpdateUserDto extends PartialType(CreateUserDto) {}
