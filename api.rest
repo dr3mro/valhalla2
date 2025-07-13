@@ -1,0 +1,61 @@
+### Create User
+POST http://localhost:3000/api/v2/users/
+Content-Type: application/json
+
+{
+  "name": "amr",
+  "email": "dr3mro2@gmail.com",
+  "password": "A1#po!q2A",
+  "country": "egypt",
+  "phone": "0123456123",
+  "role": "ADMIN",
+  "dob": "1985-01-01"
+}
+
+###
+
+### Get All Users
+GET http://localhost:3000/api/v2/users
+
+###
+
+### Update User
+PATCH http://localhost:3000/api/v2/users/c99ec39a-2611-46f9-9fc2-488711d4d446
+Content-Type: application/json
+
+{
+  "name": "amr osman",
+  "email": "dr3mro@gmail.com",
+  "password": "password",
+  "country": "egypt",
+  "phone": "0123456123",
+  "role": "ADMIN",
+  "dob": "1985-01-01"
+}
+
+###
+
+### Get a User
+GET http://localhost:3000/api/v2/users/c99ec39a-2611-46f9-9fc2-488711d4d446
+
+###
+
+### Delete a User
+DELETE http://localhost:3000/api/v2/users/23b8175b-63dc-4ecd-bd65-30857ac867d5
+
+###
+
+### Login
+POST http://localhost:3000/api/v2/auth/login
+Content-Type: application/json
+
+{
+  "username": "dr3mro2@gmail.com",
+  "password": "A1#po!q2A"
+}
+
+###
+
+### Get Profile (Authenticated)
+GET http://localhost:3000/api/v2/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRyM21yb0BnbWFpbC5jb20iLCJzdWIiOiJjOTllYzM5YS0yNjExLTQ2ZjktOWZjMi00ODg3MTFkNGQ0NDYiLCJpYXQiOjE3NTIyOTQ4OTUsImV4cCI6MTc1MjM4MTI5NX0.Y5szscAV3wuCMngy-vITWlqwnGRGhhU3TVAISsyNzQA
