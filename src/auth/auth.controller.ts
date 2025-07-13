@@ -12,6 +12,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiOkResponse,
   ApiOperation,
@@ -57,6 +58,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiOkResponse({ description: 'User profile retrieved successfully' })
   @ApiUnauthorizedResponse({ description: 'User not authenticated' })
+  @ApiBearerAuth()
   @UsePipes(new ValidationPipe({ transform: true }))
   getProfile(@Req() request: RequestWithUser): User | null {
     if (!request.user) {

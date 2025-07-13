@@ -11,13 +11,14 @@ import {
   Res,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBody, ApiParam } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -28,6 +29,9 @@ export class UsersController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiResponse({ status: 201, description: 'The user has been successfully created.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiBody({
     description: 'Add a new user',
     type: CreateUserDto,
@@ -63,6 +67,8 @@ export class UsersController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({ status: 200, description: 'Returns all users.' })
   findAll() {
     return this.usersService
       .findAll()
@@ -70,6 +76,9 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a user by id' })
+  @ApiResponse({ status: 200, description: 'Returns the user.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
   @ApiParam({
     name: 'id',
     description: 'The ID of the user to retrieve',
@@ -89,6 +98,9 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a user by id' })
+  @ApiResponse({ status: 200, description: 'The user has been successfully updated.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
   @ApiParam({
     name: 'id',
     description: 'The ID of the user to update',
@@ -132,6 +144,9 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a user by id' })
+  @ApiResponse({ status: 200, description: 'The user has been successfully deleted.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
   @ApiParam({
     name: 'id',
     description: 'The ID of the user to delete',

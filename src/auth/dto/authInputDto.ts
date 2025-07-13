@@ -3,6 +3,7 @@ import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class AuthInputDto {
   @ApiProperty({
+    description: 'The username for the user',
     example: 'test@test.com',
     required: true,
   })
@@ -12,6 +13,7 @@ export class AuthInputDto {
   username: string;
 
   @ApiProperty({
+    description: 'The password for the user',
     example: 'password',
     required: true,
     minLength: 8,
