@@ -21,7 +21,7 @@ export class AuthService {
   ): Promise<SignInResponseDto | null> {
     const { username, password } = authInput;
 
-    const user = await this.usersService.findByEmail(username);
+    const user: User | Error = await this.usersService.findByEmail(username);
 
     if (user instanceof Error || !user) {
       return null;
