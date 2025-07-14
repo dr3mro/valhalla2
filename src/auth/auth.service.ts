@@ -47,7 +47,7 @@ export class AuthService {
   }
 
   async getUserFromRequest(request: Request): Promise<User | null> {
-    const authHeader = request.headers['authorization'];
+    const authHeader = request.headers.authorization;
     const token = authHeader?.split(' ').at(1)?.trim(); // Get the token part after "Bearer"
 
     if (!token) {
