@@ -10,7 +10,7 @@ describe('AuthModule', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AuthModule],
+      imports: [AuthModule, UsersModule],
     })
       .overrideModule(UsersModule)
       .useModule({

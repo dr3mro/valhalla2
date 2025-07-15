@@ -141,7 +141,7 @@ describe('AuthService', () => {
   describe('getUserFromRequest', () => {
     it('should return the user from the request on successful token verification', async () => {
       const mockToken = 'mockToken';
-      const mockDecoded = { username: 'test@example.com', sub: '1' };
+      const mockDecoded = { user: 'test@example.com', sub: '1' };
       const mockUser: User = {
         id: '1',
         name: 'Test User',
@@ -195,7 +195,7 @@ describe('AuthService', () => {
 
     it('should return null if user is not found in database', async () => {
       const mockToken = 'mockToken';
-      const mockDecoded = { username: 'test@example.com', sub: '1' };
+      const mockDecoded = { user: 'test@example.com', sub: '1' };
       const mockRequest = {
         headers: { authorization: `Bearer ${mockToken}` },
       } as Request;
