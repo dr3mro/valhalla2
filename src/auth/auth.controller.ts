@@ -42,13 +42,13 @@ export class AuthController {
   @ApiBody({ type: AuthInputDto })
   @UseGuards(LocalGuard)
   login(@Req() req: RequestWithUser) {
-    const user = req.user;
+    const response = req.user;
 
-    if (!user) {
+    if (!response) {
       throw new UnauthorizedException();
     }
 
-    return user;
+    return response;
   }
 
   @Get('me')
