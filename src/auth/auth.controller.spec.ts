@@ -40,13 +40,16 @@ describe('AuthController', () => {
       };
       const mockSignInResponse: SignInResponseDto = {
         accessToken: 'mockAccessToken',
-        user: { id: '1', name: 'test@example.com' },
+        user: { id: '1', username: 'test@example.com' },
       };
       (authService.authenticate as jest.Mock).mockResolvedValue(
         mockSignInResponse,
       );
 
-      const mockRequest = { body: mockAuthInput, user: mockSignInResponse.user } as unknown as RequestWithUser;
+      const mockRequest = {
+        body: mockAuthInput,
+        user: mockSignInResponse.user,
+      } as unknown as RequestWithUser;
       const result = await controller.login(mockRequest);
       expect(result).toEqual(mockSignInResponse.user);
     });
@@ -57,7 +60,10 @@ describe('AuthController', () => {
         password: 'wrongpassword',
       };
 
-      const mockRequest = { body: mockAuthInput, user: null } as unknown as RequestWithUser;
+      const mockRequest = {
+        body: mockAuthInput,
+        user: null,
+      } as unknown as RequestWithUser;
       let thrownError: any;
       try {
         await controller.login(mockRequest);

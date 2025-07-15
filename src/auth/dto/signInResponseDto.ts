@@ -11,7 +11,7 @@ export class UserDto {
     description: 'The username of the user',
     example: 'test@test.com',
   })
-  name: string;
+  username: string;
 }
 
 export class SignInResponseDto {

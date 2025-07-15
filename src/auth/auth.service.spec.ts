@@ -92,7 +92,7 @@ describe('AuthService', () => {
       const result = await service.authenticate(mockAuthInput);
       expect(result).toEqual({
         accessToken: mockAccessToken,
-        user: { id: mockUser.id, name: mockUser.email },
+        user: { id: mockUser.id, username: mockUser.email },
       });
     });
 
@@ -216,12 +216,12 @@ describe('AuthService', () => {
       signInResponse.accessToken = 'someAccessToken';
       signInResponse.user = {
         id: 'someUserId',
-        name: 'test@example.com',
+        username: 'test@example.com',
       };
 
       expect(signInResponse.accessToken).toBe('someAccessToken');
       expect(signInResponse.user.id).toBe('someUserId');
-      expect(signInResponse.user.name).toBe('test@example.com');
+      expect(signInResponse.user.username).toBe('test@example.com');
     });
   });
 });
