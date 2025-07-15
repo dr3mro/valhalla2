@@ -5,7 +5,6 @@ import {
   HttpStatus,
   Post,
   Req,
-  UnauthorizedException,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -42,13 +41,7 @@ export class AuthController {
   @ApiBody({ type: AuthInputDto })
   @UseGuards(LocalGuard)
   login(@Req() req: RequestWithUser) {
-    const response = req.user;
-
-    if (!response) {
-      throw new UnauthorizedException();
-    }
-
-    return response;
+    return req.user;
   }
 
   @Get('me')
@@ -60,10 +53,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   getProfile(@Req() request: RequestWithUser): User | null {
-    if (!request.user) {
-      throw new UnauthorizedException('User not authenticated');
-    }
-    request.user.password = '********';
     return request.user;
   }
 }

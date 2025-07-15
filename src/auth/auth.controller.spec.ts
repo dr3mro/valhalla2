@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { AuthInputDto } from './dto/authInputDto';
 import { SignInResponseDto } from './dto/signInResponseDto';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
+import { LocalGuard } from './guards/local.guard';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -53,25 +54,6 @@ describe('AuthController', () => {
       const result = await controller.login(mockRequest);
       expect(result).toEqual(mockSignInResponse.user);
     });
-
-    it('should throw UnauthorizedException on failed login', async () => {
-      const mockAuthInput: AuthInputDto = {
-        username: 'test@example.com',
-        password: 'wrongpassword',
-      };
-
-      const mockRequest = {
-        body: mockAuthInput,
-        user: null,
-      } as unknown as RequestWithUser;
-      let thrownError: any;
-      try {
-        await controller.login(mockRequest);
-      } catch (error) {
-        thrownError = error;
-      }
-      expect(thrownError).toBeInstanceOf(UnauthorizedException);
-    });
   });
 
   describe('getProfile', () => {
@@ -94,14 +76,6 @@ describe('AuthController', () => {
 
       const result = controller.getProfile(mockRequest);
       expect(result).toEqual(mockUser);
-    });
-
-    it('should throw UnauthorizedException if user is not authenticated', () => {
-      const mockRequest = { user: null } as unknown as RequestWithUser;
-
-      expect(() => controller.getProfile(mockRequest)).toThrow(
-        UnauthorizedException,
-      );
     });
   });
 });

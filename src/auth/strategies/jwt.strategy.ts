@@ -22,6 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Invalid token or user not found');
     }
 
+    user.password = '********';
     return user; // this becomes req.user
   }
 }
