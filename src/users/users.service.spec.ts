@@ -102,6 +102,52 @@ describe('UsersService', () => {
       });
       expect(prisma.user.create).not.toHaveBeenCalled();
     });
+
+    it('should return an error if password hashing fails', async () => {
+      const createUserDto: CreateUserDto = {
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
+      };
+
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(service['passwordHashService'], 'hashPassword').mockResolvedValue(new Error('Hashing failed'));
+
+      const result = await service.create(createUserDto);
+      expect(result).toBeInstanceOf(Error);
+      if (result instanceof Error) {
+        expect(result.message).toBe('Hashing failed');
+      } else {
+        fail('Expected an Error instance, but received a User object.');
+      }
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { email: createUserDto.email } });
+      expect(service['passwordHashService'].hashPassword).toHaveBeenCalledWith(createUserDto.password);
+      expect(prisma.user.create).not.toHaveBeenCalled();
+    });
+
+    it('should return an error if user creation fails', async () => {
+      const createUserDto: CreateUserDto = {
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
+      };
+
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(service['passwordHashService'], 'hashPassword').mockResolvedValue('hashedPassword');
+      jest.spyOn(prisma.user, 'create').mockRejectedValue(new Error('Prisma create failed'));
+
+      await expect(service.create(createUserDto)).rejects.toThrow('Prisma create failed');
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { email: createUserDto.email } });
+      expect(prisma.user.create).toHaveBeenCalledWith({ data: { ...createUserDto, password: 'hashedPassword' } });
+    });
   });
 
   describe('findAll', () => {
@@ -261,6 +307,80 @@ describe('UsersService', () => {
         data: updateUserDto,
       });
     });
+
+    it('should return an error if email is already in use', async () => {
+      const userId = 'some-uuid';
+      const updateUserDto: UpdateUserDto = { email: 'existing@example.com' };
+      const existingUser: User = {
+        id: 'another-uuid',
+        name: 'Existing User',
+        email: 'existing@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      const currentUser: User = {
+        id: userId,
+        name: 'Current User',
+        email: 'current@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      jest.spyOn(prisma.user, 'findFirst').mockResolvedValue(currentUser);
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(existingUser);
+
+      const result = await service.update(userId, updateUserDto);
+      expect(result).toBeInstanceOf(Error);
+      if (result instanceof Error) {
+        expect(result.message).toBe('Email already in use');
+      } else {
+        fail('Expected an Error instance, but received a User object.');
+      }
+      expect(prisma.user.findFirst).toHaveBeenCalledWith({ where: { id: userId } });
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { email: updateUserDto.email } });
+      expect(prisma.user.update).not.toHaveBeenCalled();
+    });
+
+    it('should return an error if password hashing fails', async () => {
+      const userId = 'some-uuid';
+      const updateUserDto: UpdateUserDto = { password: 'newpassword' };
+      const currentUser: User = {
+        id: userId,
+        name: 'Current User',
+        email: 'current@example.com',
+        password: 'password',
+        country: 'Test Country',
+        phone: '1234567890',
+        role: Role.USER,
+        dob: '2000-01-01',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      jest.spyOn(prisma.user, 'findFirst').mockResolvedValue(currentUser);
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null); // No email conflict
+      jest.spyOn(service['passwordHashService'], 'hashPassword').mockResolvedValue(new Error('Hashing failed'));
+
+      const result = await service.update(userId, updateUserDto);
+      expect(result).toBeInstanceOf(Error);
+      if (result instanceof Error) {
+        expect(result.message).toBe('Hashing failed');
+      } else {
+        fail('Expected an Error instance, but received a User object.');
+      }
+      expect(service['passwordHashService'].hashPassword).toHaveBeenCalledWith(updateUserDto.password);
+      expect(prisma.user.update).not.toHaveBeenCalled();
+    });
   });
 
   describe('remove', () => {
@@ -304,6 +424,21 @@ describe('UsersService', () => {
       expect(prisma.user.delete).toHaveBeenCalledWith({
         where: { id: userId },
       });
+    });
+
+    it('should return an error if user not found', async () => {
+      const userId = 'non-existent-uuid';
+      jest.spyOn(prisma.user, 'findFirst').mockResolvedValue(null);
+
+      const result = await service.remove(userId);
+      expect(result).toBeInstanceOf(Error);
+      if (result instanceof Error) {
+        expect(result.message).toBe('User not found');
+      } else {
+        fail('Expected an Error instance, but received a message object.');
+      }
+      expect(prisma.user.findFirst).toHaveBeenCalledWith({ where: { id: userId } });
+      expect(prisma.user.delete).not.toHaveBeenCalled();
     });
   });
 });
