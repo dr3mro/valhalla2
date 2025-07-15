@@ -46,8 +46,9 @@ describe('AuthController', () => {
         mockSignInResponse,
       );
 
-      const result = await controller.login(mockAuthInput);
-      expect(result).toEqual(mockSignInResponse);
+      const mockRequest = { body: mockAuthInput, user: mockSignInResponse.user } as unknown as RequestWithUser;
+      const result = await controller.login(mockRequest);
+      expect(result).toEqual(mockSignInResponse.user);
     });
 
     it('should throw UnauthorizedException on failed login', async () => {
@@ -55,11 +56,15 @@ describe('AuthController', () => {
         username: 'test@example.com',
         password: 'wrongpassword',
       };
-      (authService.authenticate as jest.Mock).mockResolvedValue(null);
 
-      await expect(controller.login(mockAuthInput)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      const mockRequest = { body: mockAuthInput, user: null } as unknown as RequestWithUser;
+      let thrownError: any;
+      try {
+        await controller.login(mockRequest);
+      } catch (error) {
+        thrownError = error;
+      }
+      expect(thrownError).toBeInstanceOf(UnauthorizedException);
     });
   });
 

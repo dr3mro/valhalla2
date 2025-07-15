@@ -92,7 +92,7 @@ describe('AuthService', () => {
       const result = await service.authenticate(mockAuthInput);
       expect(result).toEqual({
         accessToken: mockAccessToken,
-        user: { id: mockUser.id, username: mockUser.email },
+        user: { id: mockUser.id, name: mockUser.email },
       });
     });
 
