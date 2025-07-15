@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PasswordHashService } from '../password-hash/password-hash.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { PasswordHashService } from '../utils/password-hash/password-hash.service';
 import { UsersModule } from './users.module';
 
 describe('UsersModule', () => {

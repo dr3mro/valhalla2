@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PasswordHashService } from '../password-hash/password-hash.service';
+import { PasswordHashService } from '../utils/password-hash/password-hash.service';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 

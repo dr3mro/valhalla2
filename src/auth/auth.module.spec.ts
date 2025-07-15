@@ -1,8 +1,8 @@
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PasswordHashService } from '../password-hash/password-hash.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersModule } from '../users/users.module';
+import { PasswordHashService } from '../utils/password-hash/password-hash.service';
 import { AuthModule } from './auth.module';
 
 describe('AuthModule', () => {
