@@ -1,11 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserDto {
-  @ApiProperty({ description: 'The id of the user', example: 'clz16syr4000008l823652n2h' })
+  @ApiProperty({
+    description: 'The id of the user',
+    example: 'clz16syr4000008l823652n2h',
+  })
   id: string;
 
-  @ApiProperty({ description: 'The username of the user', example: 'test@test.com' })
-  username: string;
+  @ApiProperty({
+    description: 'The username of the user',
+    example: 'test@test.com',
+  })
+  name: string;
 }
 
 export class SignInResponseDto {

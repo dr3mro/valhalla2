@@ -1,10 +1,10 @@
 import { UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
 import { Request } from 'express';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../prisma/prisma.service';
 import { PasswordHashService } from '../password-hash/password-hash.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { AuthInputDto } from './dto/authInputDto';
@@ -216,12 +216,12 @@ describe('AuthService', () => {
       signInResponse.accessToken = 'someAccessToken';
       signInResponse.user = {
         id: 'someUserId',
-        username: 'test@example.com',
+        name: 'test@example.com',
       };
 
       expect(signInResponse.accessToken).toBe('someAccessToken');
       expect(signInResponse.user.id).toBe('someUserId');
-      expect(signInResponse.user.username).toBe('test@example.com');
+      expect(signInResponse.user.name).toBe('test@example.com');
     });
   });
 });

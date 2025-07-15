@@ -5,7 +5,6 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AuthInputDto } from './dto/authInputDto';
 import { SignInResponseDto } from './dto/signInResponseDto';
-import { AuthGuard } from './guards/auth.guard';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
 
 describe('AuthController', () => {
@@ -15,17 +14,13 @@ describe('AuthController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
-      providers: [AuthService, AuthGuard],
+      providers: [AuthService],
     })
       .overrideProvider(AuthService)
       .useValue({
         signIn: jest.fn(),
         signUp: jest.fn(),
         authenticate: jest.fn(),
-      })
-      .overrideGuard(AuthGuard)
-      .useValue({
-        canActivate: jest.fn(() => true),
       })
       .compile();
 
@@ -45,7 +40,7 @@ describe('AuthController', () => {
       };
       const mockSignInResponse: SignInResponseDto = {
         accessToken: 'mockAccessToken',
-        user: { id: '1', username: 'test@example.com' },
+        user: { id: '1', name: 'test@example.com' },
       };
       (authService.authenticate as jest.Mock).mockResolvedValue(
         mockSignInResponse,

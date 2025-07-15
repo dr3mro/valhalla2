@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Get,
   HttpCode,
@@ -12,7 +11,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiBody,
   ApiOkResponse,
   ApiOperation,
@@ -23,7 +21,8 @@ import { User } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { AuthInputDto } from './dto/authInputDto';
 import { SignInResponseDto } from './dto/signInResponseDto';
-import { AuthGuard } from './guards/auth.guard';
+import { JwtAuthGuard } from './guards/jwt.guard';
+import { LocalGuard } from './guards/local.guard';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
 
 @ApiTags('Auth')
@@ -38,27 +37,25 @@ export class AuthController {
     description: 'User logged in successfully',
     type: SignInResponseDto,
   })
-  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBody({ type: AuthInputDto })
-  async login(
-    @Body(ValidationPipe) body: AuthInputDto,
-  ): Promise<SignInResponseDto> {
-    const loginResult = await this.authService.authenticate(body);
+  @UseGuards(LocalGuard)
+  login(@Req() req: RequestWithUser) {
+    const user = req.user;
 
-    if (loginResult) {
-      return loginResult;
-    } else {
-      throw new UnauthorizedException('Invalid credentials');
+    if (!user) {
+      throw new UnauthorizedException();
     }
+
+    return user;
   }
 
   @Get('me')
-  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiOkResponse({ description: 'User profile retrieved successfully' })
   @ApiUnauthorizedResponse({ description: 'User not authenticated' })
-  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   getProfile(@Req() request: RequestWithUser): User | null {
     if (!request.user) {

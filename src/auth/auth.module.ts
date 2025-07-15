@@ -1,22 +1,25 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { UsersModule } from 'src/users/users.module';
 import { PasswordHashService } from '../password-hash/password-hash.service';
-import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { AuthGuard } from './guards/auth.guard';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
     UsersModule,
+    PassportModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET || '1234567890qwertyuiopasdfghjklzxcvbnm',
-      signOptions: { expiresIn: process.env.JWT_EXPIRATION || '24h' }, // Adjust the expiration time as needed
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: process.env.JWT_EXPIRATION },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, PasswordHashService, AuthGuard],
+  providers: [AuthService, PasswordHashService, LocalStrategy, JwtStrategy],
   exports: [AuthService, PasswordHashService],
 })
 export class AuthModule {}
