@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
-  ValidationPipe
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiBody,

@@ -1,4 +1,3 @@
-
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
@@ -288,4 +287,3 @@ describe('UsersController', () => {
     });
   });
 });
-
