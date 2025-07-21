@@ -7,12 +7,12 @@ GET http://localhost:3000/api/v2/healthz
 
 
 ### Create User
-POST http://localhost:3000/api/v2/users/
+POST http://localhost:3000/api/v2/users
 Content-Type: application/json
 
 {
   "name": "amr",
-  "email": "dr3mro2@gmail.com",
+  "email": "dr3mro7@gmail.com",
   "password": "A1#po!q2A",
   "country": "egypt",
   "phone": "0123456123",
@@ -66,4 +66,4 @@ Content-Type: application/json
 
 ### Get Profile (Authenticated)
 GET http://localhost:3000/api/v2/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRyM21yb0BnbWFpbC5jb20iLCJzdWIiOiJjOTllYzM5YS0yNjExLTQ2ZjktOWZjMi00ODg3MTFkNGQ0NDYiLCJpYXQiOjE3NTI3NjI4MzksImV4cCI6MTc1Mjg0OTIzOX0.rVD2BkROeay7DDjmMxOIXR5e52vVfDG0k_lvW4dyn8A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRyM21yb0BnbWFpbC5jb20iLCJzdWIiOiJjOTllYzM5YS0yNjExLTQ2ZjktOWZjMi00ODg3MTFkNGQ0NDYiLCJpYXQiOjE3NTMwNjgyMzYsImV4cCI6MTc1MzE1NDYzNn0.7X84UGroKvKuBlp9P1r3csIyPUtWE4cu6IAWk0b9bbk

@@ -3,13 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   HttpStatus,
   Param,
   ParseUUIDPipe,
   Patch,
   Post,
-  Res,
-  ValidationPipe,
+  ValidationPipe
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -19,7 +19,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from '@prisma/client';
-import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
@@ -60,19 +59,14 @@ export class UsersController {
       },
     },
   })
-  async create(
-    @Body(ValidationPipe) createUserDto: CreateUserDto,
-    @Res() response: Response,
-  ) {
+  async create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
     const result = await this.usersService.create(createUserDto);
 
     if (result instanceof Error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        message: result.message,
-      });
+      throw new HttpException(result.message, HttpStatus.BAD_REQUEST);
     }
 
-    return response.status(HttpStatus.CREATED).json(this.omitPassword(result));
+    return this.omitPassword(result);
   }
 
   @Get()
@@ -94,16 +88,14 @@ export class UsersController {
     required: true,
     type: String,
   })
-  async findOne(@Param('id') id: string, @Res() response: Response) {
+  async findOne(@Param('id') id: string) {
     const user = await this.usersService.findById(id);
 
     if (user instanceof Error) {
-      return response
-        .status(HttpStatus.NOT_FOUND)
-        .json({ message: user.message });
+      throw new HttpException(user.message, HttpStatus.NOT_FOUND);
     }
 
-    return response.status(HttpStatus.OK).json(this.omitPassword(user));
+    return this.omitPassword(user);
   }
 
   @Patch(':id')
@@ -141,18 +133,15 @@ export class UsersController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-    @Res() response: Response,
   ) {
     //TODO: updating password should be handled separately
     const result = await this.usersService.update(id, updateUserDto);
 
     if (result instanceof Error) {
-      return response
-        .status(HttpStatus.NOT_FOUND)
-        .json({ message: result.message });
+      throw new HttpException(result.message, HttpStatus.NOT_FOUND);
     }
 
-    return response.status(HttpStatus.OK).json(this.omitPassword(result));
+    return this.omitPassword(result);
   }
 
   @Delete(':id')
@@ -168,15 +157,13 @@ export class UsersController {
     required: true,
     type: String,
   })
-  async remove(@Param('id') id: string, @Res() response: Response) {
+  async remove(@Param('id') id: string) {
     const result = await this.usersService.remove(id);
 
     if (result instanceof Error) {
-      return response.status(HttpStatus.NOT_FOUND).json({
-        message: result.message,
-      });
+      throw new HttpException(result.message, HttpStatus.NOT_FOUND);
     }
 
-    return response.status(HttpStatus.OK).send(result);
+    return result;
   }
 }
