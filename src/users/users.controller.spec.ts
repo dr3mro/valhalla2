@@ -1,7 +1,7 @@
-import { HttpStatus } from '@nestjs/common';
+
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
-import { Response } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
 import { PasswordHashService } from '../utils/password-hash/password-hash.service';
 import { CreateUserDto, Role } from './dto/create-user.dto';
@@ -52,16 +52,10 @@ describe('UsersController', () => {
       jest
         .spyOn(service, 'create')
         .mockResolvedValue(new Error('Invalid input'));
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-      await controller.create(createUserDto, mockResponse);
-      expect(service.create).toHaveBeenCalledWith(createUserDto);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Invalid input',
-      });
+
+      await expect(controller.create(createUserDto)).rejects.toThrow(
+        new HttpException('Invalid input', HttpStatus.BAD_REQUEST),
+      );
     });
 
     it('should handle unexpected errors from service', async () => {
@@ -77,12 +71,9 @@ describe('UsersController', () => {
       jest.spyOn(service, 'create').mockImplementation(() => {
         throw new Error('Unexpected error');
       });
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
+
       try {
-        await controller.create(createUserDto, mockResponse);
+        await controller.create(createUserDto);
       } catch (e) {
         expect((e as Error).message).toBe('Unexpected error');
       }
@@ -111,16 +102,10 @@ describe('UsersController', () => {
 
       jest.spyOn(service, 'create').mockResolvedValue(expectedUser as User);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      await controller.create(createUserDto, mockResponse);
+      const result = await controller.create(createUserDto);
 
       expect(service.create).toHaveBeenCalledWith(createUserDto);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.CREATED);
-      expect(mockResponse.json).toHaveBeenCalledWith(expectedUser);
+      expect(result).toEqual(expectedUser);
     });
 
     it('should return bad request if user already exists', async () => {
@@ -138,18 +123,9 @@ describe('UsersController', () => {
         .spyOn(service, 'create')
         .mockResolvedValue(new Error('User already exists'));
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      await controller.create(createUserDto, mockResponse);
-
-      expect(service.create).toHaveBeenCalledWith(createUserDto);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'User already exists',
-      });
+      await expect(controller.create(createUserDto)).rejects.toThrow(
+        new HttpException('User already exists', HttpStatus.BAD_REQUEST),
+      );
     });
   });
 
@@ -207,16 +183,10 @@ describe('UsersController', () => {
       };
       jest.spyOn(service, 'findById').mockResolvedValue(user as User);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      await controller.findOne(userId, mockResponse);
+      const result = await controller.findOne(userId);
 
       expect(service.findById).toHaveBeenCalledWith(userId);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.json).toHaveBeenCalledWith(user);
+      expect(result).toEqual(user);
     });
 
     it('should return not found if user not found', async () => {
@@ -225,18 +195,9 @@ describe('UsersController', () => {
         .spyOn(service, 'findById')
         .mockResolvedValue(new Error('User not found'));
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      await controller.findOne(userId, mockResponse);
-
-      expect(service.findById).toHaveBeenCalledWith(userId);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'User not found',
-      });
+      await expect(controller.findOne(userId)).rejects.toThrow(
+        new HttpException('User not found', HttpStatus.NOT_FOUND),
+      );
     });
   });
 
@@ -247,16 +208,10 @@ describe('UsersController', () => {
       jest
         .spyOn(service, 'update')
         .mockResolvedValue(new Error('User not found'));
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-      await controller.update(userId, updateUserDto, mockResponse);
-      expect(service.update).toHaveBeenCalledWith(userId, updateUserDto);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'User not found',
-      });
+
+      await expect(controller.update(userId, updateUserDto)).rejects.toThrow(
+        new HttpException('User not found', HttpStatus.NOT_FOUND),
+      );
     });
 
     it('should handle error if email already in use', async () => {
@@ -265,16 +220,10 @@ describe('UsersController', () => {
       jest
         .spyOn(service, 'update')
         .mockResolvedValue(new Error('Email already in use'));
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-      await controller.update(userId, updateUserDto, mockResponse);
-      expect(service.update).toHaveBeenCalledWith(userId, updateUserDto);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Email already in use',
-      });
+
+      await expect(controller.update(userId, updateUserDto)).rejects.toThrow(
+        new HttpException('Email already in use', HttpStatus.NOT_FOUND),
+      );
     });
     it('should update a user', async () => {
       const userId = 'some-uuid';
@@ -293,16 +242,10 @@ describe('UsersController', () => {
 
       jest.spyOn(service, 'update').mockResolvedValue(updatedUser as User);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      await controller.update(userId, updateUserDto, mockResponse);
+      const result = await controller.update(userId, updateUserDto);
 
       expect(service.update).toHaveBeenCalledWith(userId, updateUserDto);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.json).toHaveBeenCalledWith(updatedUser);
+      expect(result).toEqual(updatedUser);
     });
   });
 
@@ -312,17 +255,10 @@ describe('UsersController', () => {
       jest
         .spyOn(service, 'remove')
         .mockResolvedValue(new Error('User not found'));
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-        send: jest.fn(),
-      } as unknown as Response;
-      await controller.remove(userId, mockResponse);
-      expect(service.remove).toHaveBeenCalledWith(userId);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'User not found',
-      });
+
+      await expect(controller.remove(userId)).rejects.toThrow(
+        new HttpException('User not found', HttpStatus.NOT_FOUND),
+      );
     });
 
     it('should handle unexpected errors from service', async () => {
@@ -330,13 +266,9 @@ describe('UsersController', () => {
       jest.spyOn(service, 'remove').mockImplementation(() => {
         throw new Error('Unexpected error');
       });
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-        send: jest.fn(),
-      } as unknown as Response;
+
       try {
-        await controller.remove(userId, mockResponse);
+        await controller.remove(userId);
       } catch (e: unknown) {
         expect((e as Error).message).toBe('Unexpected error');
       }
@@ -349,17 +281,11 @@ describe('UsersController', () => {
 
       jest.spyOn(service, 'remove').mockResolvedValue(deletedUserMessage);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-        send: jest.fn(),
-      } as unknown as Response;
-
-      await controller.remove(userId, mockResponse);
+      const result = await controller.remove(userId);
 
       expect(service.remove).toHaveBeenCalledWith(userId);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.send).toHaveBeenCalledWith(deletedUserMessage);
+      expect(result).toEqual(deletedUserMessage);
     });
   });
 });
+
